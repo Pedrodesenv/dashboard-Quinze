@@ -35,7 +35,11 @@ export default function Sidebar({ setTelaAtiva, telaAtiva }: SidebarProps) {
   return (
     <aside className="w-64 bg-primary text-white flex flex-col min-h-screen">
       <div className="p-6 border-b border-white/10 flex items-center justify-center">
-        <img src={logoQuinze} alt="Logo Quinze" className="w-32 object-contain" />
+        <img 
+    src={logoQuinze} 
+     alt="Logo Quinze" 
+     className="w-32 object-contain brightness-0 invert" 
+      />
       </div>
 
       <nav className="flex-1 py-6 space-y-1">
