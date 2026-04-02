@@ -1,4 +1,7 @@
-import { LayoutDashboard, TrendingUp, Smile, Clock, Users, Briefcase, Settings } from 'lucide-react';
+import { useContext } from 'react';
+import { LayoutDashboard, TrendingUp, Smile, Clock, Users, Briefcase, Settings, PieChart } from 'lucide-react';
+import logoQuinze from '../assets/logo_quinze.png'; 
+import { AuthContext } from '../context/AuthContext'; 
 
 interface SidebarProps {
   setTelaAtiva: (tela: string) => void;
@@ -6,8 +9,13 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ setTelaAtiva, telaAtiva }: SidebarProps) {
+  // Truque de força bruta para o TypeScript parar de reclamar do Contexto
+  const authContext = useContext(AuthContext) as any;
+  const userRole = authContext?.userRole || '';
+
   const menuItems = [
     { icon: LayoutDashboard, label: 'Financeiro' },
+    { icon: PieChart, label: 'Clientes' }, 
     { icon: TrendingUp, label: 'Produção Diária' },
     { icon: Smile, label: 'NPS' },
     { icon: Clock, label: 'Tempo & SLA' },
@@ -16,18 +24,26 @@ export default function Sidebar({ setTelaAtiva, telaAtiva }: SidebarProps) {
     { icon: Settings, label: 'Processos' },
   ];
 
+  // Filtro de Segurança do Chefe
+  const menuPermitido = menuItems.filter(item => {
+    if (item.label === 'Financeiro' && userRole !== 'direção') {
+      return false; 
+    }
+    return true; 
+  });
+
   return (
     <aside className="w-64 bg-primary text-white flex flex-col min-h-screen">
       <div className="p-6 border-b border-white/10 flex items-center justify-center">
-        <h2 className="text-2xl font-bold tracking-wider">QUINZE</h2>
+        <img src={logoQuinze} alt="Logo Quinze" className="w-32 object-contain" />
       </div>
 
       <nav className="flex-1 py-6 space-y-1">
-        {menuItems.map((item) => {
+        {menuPermitido.map((item) => {
           const Icon = item.icon;
           const isAtivo = telaAtiva === item.label;
           return (
-            <button 
+            <button
               key={item.label}
               onClick={() => setTelaAtiva(item.label)}
               className={`w-full flex items-center gap-3 px-6 py-3 transition-all ${
